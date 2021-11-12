@@ -1,0 +1,3 @@
+[submodule "car-manager"]
+	path = car-manager
+	url = https://github.com/amalhotra2000/cars.git
