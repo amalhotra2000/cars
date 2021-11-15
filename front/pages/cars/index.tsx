@@ -76,6 +76,7 @@ export default function Home() {
       <Head>
         <title>Home</title>
         </Head>
+        <h1><Link href="/cars/addcar">Add new Car</Link></h1>
       <h1>Cars List:-</h1>
 
       <ul>
