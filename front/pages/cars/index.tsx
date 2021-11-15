@@ -80,7 +80,7 @@ export default function Home() {
 
       <ul>
         {cars? cars.map((car:CarProps) =>
-          <li><Link href={{pathname: `/cars/:${car.id}`}}>{car.brand}</Link><button onClick={()=>del(car.id)}>Delete</button></li>
+          <li><Link href={{pathname: `/cars/${car.id}`}}>{car.brand}</Link><button onClick={()=>del(car.id)}>Delete</button></li>
           
       ) : "No Cars to display"}
        

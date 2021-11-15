@@ -1,9 +1,10 @@
-import { captureRejections } from 'events'
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import Link from 'next/link'
 import { Icar } from '../../types'
 
-
+// interface CarProps{
+//   carinfo:Icar
+// }
 
 // export const getStaticPaths = async ()=> {
 //     const res = await fetch(`http://localhost:8000/car`)
@@ -46,17 +47,19 @@ import { Icar } from '../../types'
 // export default Detail
 
 import React, {useState,useEffect} from 'react'
-import {useParams} from 'react-router-dom'
 
-export default function Detail(){
+interface CarId{
+  carid:number
+}
+
+export default function Detail({carid}:CarId){
+  
   const [carBrand,setcarBrand] = useState("");
   const [carColor,setcarColor] = useState("");
   const [carModel,setcarModel] = useState("");
-
-  const {id} = useParams();
   
   useEffect(()=>{
-    fetch(`http://localhost:8000/car/${id}`)
+    fetch(`http://localhost:8000/car/${carid}`)  //fetching the detail of car using the id
     .then(res=>res.json())
     .then((result)=>{
       setcarBrand(result.brand)
@@ -68,7 +71,7 @@ export default function Detail(){
 
 return (
           <div>
-            <h2>Brand = {carBrand}</h2>
+            <h2>Brand = {carBrand}</h2>  
             <h2>Color = {carColor}</h2>
             <h2>Model = {carModel}</h2>
   
@@ -77,3 +80,27 @@ return (
         )
 
 }
+
+  export const getStaticProps = async(context: { params: { id: number } })=>{  //passing only id of car as a props
+    const id = context.params.id;
+    return{
+        props:{carid:id}
+    }
+}
+
+export const getStaticPaths = async ()=> {
+    const res = await fetch(`http://localhost:8000/car`)
+    const data = await res.json()
+
+    const paths = data.map((car: { id: { toString: () => any } })=>{
+        return{
+            params:{id:car.id.toString()}
+        }
+    })
+  
+    return {
+      paths,
+      fallback:false
+    }
+  }
+
