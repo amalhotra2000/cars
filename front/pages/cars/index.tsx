@@ -19,7 +19,7 @@ import React, { useEffect, useState } from 'react';
 //         const cars = await response.json()
 //         Router.push("/cars");
 //   }
-  
+
 //   return (
 //     <div>
 //       <Head>
@@ -32,7 +32,7 @@ import React, { useEffect, useState } from 'react';
 //           <li><Link href={{pathname: `/cars/${car.id}`}}>{car.brand}</Link><button onClick={()=>del(car.id)}>Delete</button></li>
 //       ) : "No Cars to display"}
 //       </ul>
-    
+
 //     </div>
 //   )
 // }
@@ -48,27 +48,26 @@ import React, { useEffect, useState } from 'react';
 //     },
 //   }
 // }
-  interface CarProps {
-      id:number,
-      brand:string,
-  }
+import { carDeleteApi, carInfoApi } from '../../services/carService'
+
+interface CarProps {        // Interface
+  id: number,
+  brand: string,
+}
 
 export default function Home() {
-
-  const [cars,setcars] = useState([])
+  const [cars,setCars] = useState([])     //cars array
 
   useEffect(()=>{
-      fetch('http://localhost:8000/car')
-      .then(res=>res.json())
-      .then((result)=>{
-        setcars(result);
+    carInfoApi((data:any)=>{         // api call to get cars list
+      setCars(data)
       })
   },[])
 
-  const del = async (deleteid:number) =>{
-        const response = await fetch('http://localhost:8000/car/'+deleteid,{method:'DELETE'})
-        const cars = await response.json()
-        setcars(cars);
+  const handleDelete = async (deleteid:number) =>{           // api call to delete car
+        carDeleteApi(deleteid,(data:any)=>{
+          setCars(data)
+        })
   }
   
   return (
@@ -76,16 +75,32 @@ export default function Home() {
       <Head>
         <title>Home</title>
         </Head>
-        <h1><Link href="/cars/addcar">Add new Car</Link></h1>
+        <button><Link href="/cars/addcar">Add new Car</Link></button>
       <h1>Cars List:-</h1>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Delete</th>
 
-      <ul>
+          </tr>
+        </thead>
+        <tbody>
         {cars? cars.map((car:CarProps) =>
-          <li><Link href={{pathname: `/cars/${car.id}`}}>{car.brand}</Link><button onClick={()=>del(car.id)}>Delete</button></li>
+        <tr>
+          <td>{car.id}</td>
+          <td>
+            <Link href={{pathname: `/cars/${car.id}`}}><a>{car.brand}</a></Link>
+            </td>
+            <td>
+            <button onClick={()=>handleDelete(car.id)}>Delete</button>
+            </td>
+          </tr>
           
       ) : "No Cars to display"}
-       
-      </ul>
+      </tbody>
+      </table>
     
     </div>
   )
